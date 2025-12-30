@@ -2,9 +2,18 @@ import React, { Profiler, useLayoutEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import FlexBasic from '../Flex/FlexBasic'
+import {
+  defineFlexBasicElement,
+  NativeFlexBasicElement,
+} from '../Flex/FlexBasicElement'
 import { Flexbox as RlkFlexbox } from 'react-layout-kit'
 
-type BenchName = 'local(FlexBasic)' | 'react-layout-kit(Flexbox)'
+defineFlexBasicElement()
+
+type BenchName =
+  | 'local(FlexBasic)'
+  | 'native(WebComponent)'
+  | 'react-layout-kit(Flexbox)'
 
 type MemorySample = {
   usedJSHeapSize?: number
@@ -211,6 +220,10 @@ export default function PerfBatch() {
         {
           name: 'local(FlexBasic)' as const,
           Impl: FlexBasic,
+        },
+        {
+          name: 'native(WebComponent)' as const,
+          Impl: NativeFlexBasicElement,
         },
         {
           name: 'react-layout-kit(Flexbox)' as const,
@@ -464,7 +477,8 @@ export default function PerfBatch() {
     <div style={{ padding: 16, fontFamily: 'system-ui, sans-serif' }}>
       <h1 style={{ margin: 0, fontSize: 18 }}>Flexbox perf batch</h1>
       <p style={{ marginTop: 8, opacity: 0.8 }}>
-        Compare local Flex (CSS vars) vs react-layout-kit Flexbox.
+        Compare local Flex (CSS vars) vs Web Component vs react-layout-kit
+        Flexbox.
       </p>
 
       <div style={{ marginTop: 8 }}>
@@ -543,6 +557,12 @@ export default function PerfBatch() {
 
         <button onClick={() => runOne('local(FlexBasic)')} disabled={running}>
           {running ? 'Running…' : 'Run local'}
+        </button>
+        <button
+          onClick={() => runOne('native(WebComponent)')}
+          disabled={running}
+        >
+          {running ? 'Running…' : 'Run native'}
         </button>
         <button
           onClick={() => runOne('react-layout-kit(Flexbox)')}
